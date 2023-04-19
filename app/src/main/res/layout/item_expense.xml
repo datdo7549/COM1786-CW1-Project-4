@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="20dp"
+    android:layout_marginBottom="20dp"
+    android:background="@drawable/item_trip_background">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvExpenseType"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Type"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:fontFamily="@font/roboto_bold"
+        android:textColor="@color/white"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvExpenseAmount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="200"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:fontFamily="@font/roboto_bold"
+        android:textColor="@color/white"
+        app:layout_constraintTop_toTopOf="@id/tvExpenseType"
+        app:layout_constraintBottom_toBottomOf="@id/tvExpenseType"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvExpenseTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="03/06/1999"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:fontFamily="@font/roboto_bold"
+        android:textColor="@color/white"
+        app:layout_constraintTop_toTopOf="@id/tvExpenseComment"
+        app:layout_constraintBottom_toBottomOf="@id/tvExpenseComment"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvExpenseComment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="This is comment"
+        android:layout_marginTop="10dp"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:fontFamily="@font/roboto_bold"
+        android:textColor="@color/white"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvExpenseType" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

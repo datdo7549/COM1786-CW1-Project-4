@@ -1,0 +1,36 @@
+<resources>
+    <string name="app_name">[COMP1786 CW1] Project</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="login_now">Login Now</string>
+    <string name="login_desc">Please enter the details below to continue.</string>
+    <string name="username_hint">Username</string>
+    <string name="password_hint">Password</string>
+    <string name="not_have_account">Don\'t have account?</string>
+    <string name="register">Register</string>
+    <string name="login_button">Login</string>
+    <string name="register_now">Register Now</string>
+    <string name="confirm_password_hint">Confirm password</string>
+    <string name="register_button">Register</string>
+    <string name="cancel_title">Cancel</string>
+    <string name="add_trip">Add new trip</string>
+    <string name="name_of_trip">Trip name</string>
+    <string name="destination">Destination</string>
+    <string name="date_of_trip">Date of trip</string>
+    <string name="description">Trip description</string>
+    <string name="required_risk_desc">Required risk:</string>
+    <string name="add">Add</string>
+    <string name="trip_detail">This is detail about trip</string>
+    <string name="trip_detail_desc">This is detail about this trip</string>
+    <string name="delete">Delete trip</string>
+    <string name="add_expense">Add expense</string>
+    <string name="expense_type">Expense type</string>
+    <string name="expense_amount">Expense amount</string>
+    <string name="expense_time">Expense time</string>
+    <string name="expense_comment">Expense comment (optional)</string>
+    <string name="reset">Clear all</string>
+    <string name="search">Search...</string>
+    <string name="take_picture">Get picture</string>
+    <string name="add_trip_desc">Please fill to required field to add new trip</string>
+    <string name="add_image">Add image</string>
+</resources>
