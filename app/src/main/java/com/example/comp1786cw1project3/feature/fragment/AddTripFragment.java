@@ -1,4 +1,4 @@
-package com.example.comp1786cw1project3.feature.add_trip;
+package com.example.comp1786cw1project3.feature.fragment;
 
 import android.app.DatePickerDialog;
 import android.os.Bundle;
@@ -11,24 +11,23 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.comp1786cw1project3.databinding.FragmentAddTripBinding;
-import com.example.comp1786cw1project3.feature.base.BaseFragment;
+import com.example.comp1786cw1project3.feature.viewModel.AddNewTripLocalViewModel;
 
 import java.util.Calendar;
-import java.util.Objects;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
-public class AddTripFragment extends BaseFragment<FragmentAddTripBinding, AddTripViewModel> {
-    private AddTripViewModel viewModel;
+public class AddTripFragment extends BaseFragment<FragmentAddTripBinding, AddNewTripLocalViewModel> {
+    private AddNewTripLocalViewModel addNewTripLocalViewModel;
     public static AddTripFragment newInstance() {
         return new AddTripFragment();
     }
 
     @Override
-    protected AddTripViewModel viewModel() {
-        viewModel = new ViewModelProvider(this).get(AddTripViewModel.class);
-        return viewModel;
+    protected AddNewTripLocalViewModel viewModel() {
+        addNewTripLocalViewModel = new ViewModelProvider(this).get(AddNewTripLocalViewModel.class);
+        return addNewTripLocalViewModel;
     }
 
     @Override
@@ -48,18 +47,23 @@ public class AddTripFragment extends BaseFragment<FragmentAddTripBinding, AddTri
     }
 
     private void onSaveTripClicked() {
-        String tripName = viewBinding.edtTripName.getText().toString().trim();
-        String destination = viewBinding.edtDestination.getText().toString().trim();
-        String dateOfTrip = viewBinding.edtDateOfTrip.getText().toString().trim();
-        String description = viewBinding.edtDescription.getText().toString().trim();
         String requiredRisk = viewBinding.cbRequiredRisk.isChecked() ? "Yes" : "No";
 
-        if (tripName.isEmpty() || destination.isEmpty() || dateOfTrip.isEmpty()) {
-            Toast.makeText(requireContext(), "Please fill in the required fields", Toast.LENGTH_SHORT).show();
+        if (viewBinding.edtTripName.getText().toString().trim().isEmpty()
+                || viewBinding.edtDestination.getText().toString().trim().isEmpty()
+                || viewBinding.edtDateOfTrip.getText().toString().trim().isEmpty()
+        ) {
+            Toast.makeText(requireContext(), "Input required field", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        viewModel.saveTrip(tripName, destination, dateOfTrip, description, requiredRisk);
+        addNewTripLocalViewModel.saveTripToLocalDatabase(
+                viewBinding.edtTripName.getText().toString().trim(),
+                viewBinding.edtDestination.getText().toString().trim(),
+                viewBinding.edtDateOfTrip.getText().toString().trim(),
+                viewBinding.edtDescription.getText().toString().trim(),
+                requiredRisk
+        );
         navigateUp();
     }
 
@@ -67,11 +71,8 @@ public class AddTripFragment extends BaseFragment<FragmentAddTripBinding, AddTri
         DatePickerDialog datePickerDialog = new DatePickerDialog(
                 requireContext(),
                 (view, year, month, dayOfMonth) -> {
-                    // Handle the selected date
-                    String selectedDate = year + "/" + (month+1) + "/" + dayOfMonth;
-                    viewBinding.edtDateOfTrip.setText(selectedDate);
+                    setDateOfTripToUi(year, month, dayOfMonth);
                 },
-                // Set the initial date to the current date
                 Calendar.getInstance().get(Calendar.YEAR),
                 Calendar.getInstance().get(Calendar.MONTH),
                 Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
@@ -79,4 +80,8 @@ public class AddTripFragment extends BaseFragment<FragmentAddTripBinding, AddTri
         datePickerDialog.show();
     }
 
+    private void setDateOfTripToUi(int year, int month, int dayOfMonth) {
+        String selectedDate = year + "/" + (month+1) + "/" + dayOfMonth;
+        viewBinding.edtDateOfTrip.setText(selectedDate);
+    }
 }

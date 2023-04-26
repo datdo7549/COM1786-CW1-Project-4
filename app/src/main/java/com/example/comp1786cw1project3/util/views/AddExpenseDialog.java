@@ -14,7 +14,7 @@ import android.widget.Toast;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.comp1786cw1project3.databinding.AddExpenseDialogBinding;
-import com.example.comp1786cw1project3.model.Expense;
+import com.example.comp1786cw1project3.model.ExpenseModel;
 import com.example.comp1786cw1project3.util.listener.AddExpenseDialogListener;
 
 import java.util.Calendar;
@@ -75,8 +75,8 @@ public class AddExpenseDialog extends DialogFragment {
                 Toast.makeText(requireContext(), "Please fill to required field", Toast.LENGTH_SHORT).show();
             } else {
                 dismiss();
-                Expense expense = new Expense(tripId, type, amount, time, comment);
-                expenseDialogListener.onAddClicked(expense);
+                ExpenseModel expenseModel = new ExpenseModel(tripId, type, amount, time, comment);
+                expenseDialogListener.onAddClicked(expenseModel);
             }
         });
     }

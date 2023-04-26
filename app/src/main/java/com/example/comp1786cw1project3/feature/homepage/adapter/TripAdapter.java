@@ -12,19 +12,19 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.comp1786cw1project3.R;
-import com.example.comp1786cw1project3.model.Trip;
+import com.example.comp1786cw1project3.model.TripModel;
 import com.example.comp1786cw1project3.util.listener.ItemTripClickListener;
 
 import java.util.ArrayList;
 
 public class TripAdapter extends RecyclerView.Adapter<TripAdapter.ViewHolder> {
 
-    private ArrayList<Trip> mData;
+    private ArrayList<TripModel> mData;
     private ItemTripClickListener listener;
 
     private Context context;
 
-    public TripAdapter(Context context, ArrayList<Trip> data, ItemTripClickListener listener) {
+    public TripAdapter(Context context, ArrayList<TripModel> data, ItemTripClickListener listener) {
         this.context = context;
         this.mData = data;
         this.listener = listener;
@@ -40,7 +40,7 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Trip item = mData.get(position);
+        TripModel item = mData.get(position);
         if (position%2 == 0) {
             holder.root.setBackground(ContextCompat.getDrawable(context, R.drawable.item_trip_background));
         } else {
@@ -60,13 +60,12 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.ViewHolder> {
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public ConstraintLayout root;
-        public AppCompatTextView tripName;
-        public AppCompatTextView dateOfTrip;
+        public AppCompatTextView tripName, dateOfTrip;
 
         public ViewHolder(View view) {
             super(view);
             root = view.findViewById(R.id.root);
-            tripName = view.findViewById(R.id.tvTripName);
+            tripName = view.findViewById(R.id.tvNameOfTrip);
             dateOfTrip = view.findViewById(R.id.dateOfTrip);
         }
     }

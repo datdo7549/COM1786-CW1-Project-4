@@ -1,4 +1,4 @@
-package com.example.comp1786cw1project3.feature.trip_detail;
+package com.example.comp1786cw1project3.feature.fragment;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -17,9 +17,9 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.comp1786cw1project3.databinding.FragmentTripDetailBinding;
-import com.example.comp1786cw1project3.feature.base.BaseFragment;
+import com.example.comp1786cw1project3.feature.viewModel.TripDetailViewModel;
 import com.example.comp1786cw1project3.feature.trip_detail.adapter.ExpenseAdapter;
-import com.example.comp1786cw1project3.model.Expense;
+import com.example.comp1786cw1project3.model.ExpenseModel;
 import com.example.comp1786cw1project3.util.listener.AddExpenseDialogListener;
 import com.example.comp1786cw1project3.util.views.AddExpenseDialog;
 
@@ -32,16 +32,17 @@ import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
 public class TripDetailFragment extends BaseFragment<FragmentTripDetailBinding, TripDetailViewModel> implements AddExpenseDialogListener {
-    private TripDetailViewModel viewModel;
+    private static final String KEY_TRIP_ID = "KEY_TRIP_ID";
 
-    private ExpenseAdapter expenseAdapter;
+    private TripDetailViewModel tripDetailViewModel;
 
-    private ArrayList<Expense> expenses = new ArrayList<>();
+    private ExpenseAdapter listExpenseAdapter;
 
-    private static final String KEY_1  = "KEY_1";
+    private ArrayList<ExpenseModel> expens = new ArrayList<>();
+
     public static TripDetailFragment newInstance(String tripId) {
         Bundle args = new Bundle();
-        args.putString(KEY_1, tripId);
+        args.putString(KEY_TRIP_ID, tripId);
         TripDetailFragment fragment = new TripDetailFragment();
         fragment.setArguments(args);
         return fragment;
@@ -49,8 +50,8 @@ public class TripDetailFragment extends BaseFragment<FragmentTripDetailBinding, 
 
     @Override
     protected TripDetailViewModel viewModel() {
-        viewModel = new ViewModelProvider(this).get(TripDetailViewModel.class);
-        return viewModel;
+        tripDetailViewModel = new ViewModelProvider(this).get(TripDetailViewModel.class);
+        return tripDetailViewModel;
     }
 
     @Override
@@ -61,22 +62,27 @@ public class TripDetailFragment extends BaseFragment<FragmentTripDetailBinding, 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        viewModel.tripId = getArguments().getString(KEY_1, "");
+        tripDetailViewModel.tripId = getArguments().getString(KEY_TRIP_ID, "");
 
-        expenseAdapter = new ExpenseAdapter(expenses);
-        viewBinding.rvExpense.setAdapter(expenseAdapter);
+        initRecyclerViewExpenseList();
+        initButton();
 
+        tripDetailViewModel.getTripDetailFromDatabase();
+        tripDetailViewModel.getExpensesList();
 
+        observeViewModel();
+    }
+
+    private void initRecyclerViewExpenseList() {
+        listExpenseAdapter = new ExpenseAdapter(expens);
+        viewBinding.rvExpense.setAdapter(listExpenseAdapter);
+    }
+
+    private void initButton() {
         viewBinding.btnAddExpense.setOnClickListener(v -> {
-            AddExpenseDialog addExpenseDialog = new AddExpenseDialog(viewModel.tripId, this);
+            AddExpenseDialog addExpenseDialog = new AddExpenseDialog(tripDetailViewModel.tripId, this);
             addExpenseDialog.setCancelable(false);
             addExpenseDialog.show(getParentFragmentManager(), TripDetailFragment.class.getName());
-        });
-
-
-        viewBinding.btnDeleteTrip.setOnClickListener(v -> {
-            viewModel.deleteTrip();
-            navigateUp();
         });
 
         viewBinding.btnTakePicture.setOnClickListener(v -> {
@@ -84,14 +90,24 @@ public class TripDetailFragment extends BaseFragment<FragmentTripDetailBinding, 
             startActivityForResult(intent, 1);
         });
 
-        viewModel.getTripDetail();
-        viewModel.getExpenses();
+        viewBinding.btnDeleteTrip.setOnClickListener(v -> {
+            tripDetailViewModel.deleteTrip();
+            navigateUp();
+        });
 
-        observeViewModel();
+        viewBinding.btnEditTrip.setOnClickListener(v -> {
+            tripDetailViewModel.updateSelectedTrip(
+                    viewBinding.edtTripName.getText().toString(),
+                    viewBinding.edtDestination.getText().toString(),
+                    viewBinding.edtDateOfTrip.getText().toString(),
+                    viewBinding.cbRequiredRisk.isChecked() ? "Yes" : "No",
+                    viewBinding.edtDescription.getText().toString()
+            );
+        });
     }
 
     private void observeViewModel() {
-        viewModel.tripDetail.observe(getViewLifecycleOwner(), trip -> {
+        tripDetailViewModel.tripDetailLiveData.observe(getViewLifecycleOwner(), trip -> {
             viewBinding.edtTripName.setText(trip.tripName);
             viewBinding.edtDestination.setText(trip.destination);
             viewBinding.edtDateOfTrip.setText(trip.dateTrip);
@@ -116,15 +132,15 @@ public class TripDetailFragment extends BaseFragment<FragmentTripDetailBinding, 
             }
         });
 
-        viewModel.tripExpense.observe(getViewLifecycleOwner(), expensesNew -> {
+        tripDetailViewModel.tripExpenseLiveData.observe(getViewLifecycleOwner(), expensesNew -> {
             if (expensesNew.isEmpty()) {
                 viewBinding.rvExpense.setVisibility(View.GONE);
                 return;
             }
             viewBinding.rvExpense.setVisibility(View.VISIBLE);
-            expenses.clear();
-            expenses.addAll(expensesNew);
-            expenseAdapter.notifyDataSetChanged();
+            expens.clear();
+            expens.addAll(expensesNew);
+            listExpenseAdapter.notifyDataSetChanged();
         });
     }
 
@@ -139,28 +155,27 @@ public class TripDetailFragment extends BaseFragment<FragmentTripDetailBinding, 
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(requireContext().getContentResolver(), uri);
                 viewBinding.image.setVisibility(View.VISIBLE);
                 viewBinding.image.setImageBitmap(bitmap);
-                viewModel.updatePicture(filePath);
+                tripDetailViewModel.updatePictureOfThisTrip(filePath);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
     }
 
+    @Override
+    public void onAddClicked(ExpenseModel expenseModel) {
+        tripDetailViewModel.storeExpenseToTrip(expenseModel);
+        tripDetailViewModel.getExpensesList();
+
+    }
+
     private String getRealPathFromURI(Uri uri) {
-        String[] projection = { MediaStore.Images.Media.DATA };
+        String[] projection = {MediaStore.Images.Media.DATA};
         Cursor cursor = requireContext().getContentResolver().query(uri, projection, null, null, null);
         int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
         cursor.moveToFirst();
         String filePath = cursor.getString(column_index);
         cursor.close();
         return filePath;
-    }
-
-
-    @Override
-    public void onAddClicked(Expense expense) {
-        viewModel.addExpenseToTrip(expense);
-        viewModel.getExpenses();
-
     }
 }

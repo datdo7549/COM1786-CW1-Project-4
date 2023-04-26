@@ -5,7 +5,7 @@ import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "Expense")
-public class Expense {
+public class ExpenseModel {
     @PrimaryKey(autoGenerate = true)
     public int uid;
 
@@ -24,7 +24,7 @@ public class Expense {
     @ColumnInfo(name = "comment")
     public String comment;
 
-    public Expense(String tripId, String type, String amount, String time, String comment) {
+    public ExpenseModel(String tripId, String type, String amount, String time, String comment) {
         this.tripId = tripId;
         this.type = type;
         this.amount = amount;

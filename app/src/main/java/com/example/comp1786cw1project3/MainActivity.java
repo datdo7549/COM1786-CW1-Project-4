@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 
 import com.example.comp1786cw1project3.databinding.ActivityMainBinding;
-import com.example.comp1786cw1project3.feature.homepage.HomeFragment;
+import com.example.comp1786cw1project3.feature.fragment.HomeFragment;
 
 import dagger.hilt.android.AndroidEntryPoint;
 

@@ -5,7 +5,7 @@ import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "Trip")
-public class Trip {
+public class TripModel {
     @PrimaryKey(autoGenerate = true)
     public int uid;
 
@@ -27,7 +27,7 @@ public class Trip {
     @ColumnInfo(name = "picture_path")
     public String path;
 
-    public Trip(String tripName, String destination, String dateTrip, String risk, String description) {
+    public TripModel(String tripName, String destination, String dateTrip, String risk, String description) {
         this.tripName = tripName;
         this.destination = destination;
         this.dateTrip = dateTrip;

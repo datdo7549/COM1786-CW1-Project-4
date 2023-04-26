@@ -9,15 +9,15 @@ import androidx.appcompat.widget.AppCompatTextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.comp1786cw1project3.R;
-import com.example.comp1786cw1project3.model.Expense;
+import com.example.comp1786cw1project3.model.ExpenseModel;
 
 import java.util.ArrayList;
 
 public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ViewHolder> {
 
-    private ArrayList<Expense> mData;
+    private ArrayList<ExpenseModel> mData;
 
-    public ExpenseAdapter(ArrayList<Expense> data) {
+    public ExpenseAdapter(ArrayList<ExpenseModel> data) {
         this.mData = data;
     }
 
@@ -31,7 +31,7 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Expense item = mData.get(position);
+        ExpenseModel item = mData.get(position);
 
         holder.type.setText(item.type);
         holder.amount.setText(item.amount);

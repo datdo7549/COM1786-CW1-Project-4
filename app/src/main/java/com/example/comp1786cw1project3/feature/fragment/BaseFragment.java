@@ -1,4 +1,4 @@
-package com.example.comp1786cw1project3.feature.base;
+package com.example.comp1786cw1project3.feature.fragment;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -15,7 +15,6 @@ import com.tunjid.androidx.navigation.StackNavigator;
 
 public abstract class BaseFragment<VB, VM> extends Fragment {
     private StackNavigator navigator;
-
     public VB viewBinding;
     protected abstract VM viewModel();
 

@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/white"
-    tools:context="com.example.comp1786cw1project3.feature.trip_detail.TripDetailFragment">
+    tools:context="com.example.comp1786cw1project3.feature.fragment.TripDetailFragment">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -51,7 +51,6 @@
                 android:layout_height="50dp"
                 android:layout_marginTop="20dp"
                 android:background="@drawable/input_text_background_3"
-                android:editable="false"
                 android:paddingHorizontal="15dp"
                 android:textColor="@color/black"
                 android:textColorHint="@color/black"
@@ -65,7 +64,6 @@
                 android:layout_height="50dp"
                 android:layout_marginTop="15dp"
                 android:background="@drawable/input_text_background_3"
-                android:editable="false"
                 android:paddingHorizontal="15dp"
                 android:textColor="@color/black"
                 android:textColorHint="@color/black"
@@ -79,7 +77,6 @@
                 android:layout_height="50dp"
                 android:layout_marginTop="15dp"
                 android:background="@drawable/input_text_background_3"
-                android:editable="false"
                 android:paddingHorizontal="15dp"
                 android:textColor="@color/black"
                 android:textColorHint="@color/black"
@@ -93,7 +90,6 @@
                 android:layout_height="50dp"
                 android:layout_marginTop="15dp"
                 android:background="@drawable/input_text_background_3"
-                android:editable="false"
                 android:paddingHorizontal="15dp"
                 android:textColor="@color/black"
                 android:textColorHint="@color/black"
@@ -117,7 +113,6 @@
                 android:id="@+id/cbRequiredRisk"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:clickable="false"
                 app:layout_constraintBottom_toBottomOf="@id/tvIsRequiredRisk"
                 app:layout_constraintStart_toEndOf="@id/tvIsRequiredRisk"
                 app:layout_constraintTop_toTopOf="@id/tvIsRequiredRisk" />
@@ -146,6 +141,17 @@
                 app:layout_constraintTop_toBottomOf="@id/rvExpense" />
 
             <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnEditTrip"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginTop="25dp"
+                android:text="Update trip"
+                android:textAllCaps="false"
+                android:background="@drawable/button_background"
+                android:src="@drawable/ic_image"
+                app:layout_constraintTop_toBottomOf="@id/edtDescription"/>
+
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btnTakePicture"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
@@ -154,7 +160,7 @@
                 android:textAllCaps="false"
                 android:background="@drawable/button_background"
                 android:src="@drawable/ic_image"
-                app:layout_constraintTop_toBottomOf="@id/edtDescription"/>
+                app:layout_constraintTop_toBottomOf="@id/btnEditTrip"/>
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/image"

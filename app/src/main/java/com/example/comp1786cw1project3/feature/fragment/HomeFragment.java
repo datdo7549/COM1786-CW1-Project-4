@@ -1,10 +1,10 @@
-package com.example.comp1786cw1project3.feature.homepage;
+package com.example.comp1786cw1project3.feature.fragment;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
-import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
@@ -12,31 +12,30 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.comp1786cw1project3.databinding.FragmentHomeBinding;
-import com.example.comp1786cw1project3.feature.add_trip.AddTripFragment;
-import com.example.comp1786cw1project3.feature.base.BaseFragment;
+import com.example.comp1786cw1project3.feature.viewModel.HomePageViewModel;
 import com.example.comp1786cw1project3.feature.homepage.adapter.TripAdapter;
-import com.example.comp1786cw1project3.feature.trip_detail.TripDetailFragment;
-import com.example.comp1786cw1project3.model.Trip;
+import com.example.comp1786cw1project3.model.TripModel;
 import com.example.comp1786cw1project3.util.listener.ItemTripClickListener;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
-public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewModel> implements ItemTripClickListener {
-    private HomeViewModel viewModel;
-    private TripAdapter tripAdapter;
-    private ArrayList<Trip> trips = new ArrayList<>();
+public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomePageViewModel> implements ItemTripClickListener {
+    private TripAdapter listTripAdapter;
+    private HomePageViewModel homePageViewModel;
+    private final ArrayList<TripModel> tripModels = new ArrayList<>();
     public static HomeFragment newInstance() {
         return new HomeFragment();
     }
 
     @Override
-    protected HomeViewModel viewModel() {
-        viewModel = new ViewModelProvider(this).get(HomeViewModel.class);
-        return viewModel;
+    protected HomePageViewModel viewModel() {
+        homePageViewModel = new ViewModelProvider(this).get(HomePageViewModel.class);
+        return homePageViewModel;
     }
 
     @Override
@@ -47,33 +46,43 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        onBackPressedCallBack();
         initView();
         initViewModel();
-
-        onBackPressedCallBack();
     }
 
     private void initView() {
-        tripAdapter = new TripAdapter(requireContext(), trips, this);
-        viewBinding.rvTrips.setAdapter(tripAdapter);
+        initRecyclerView();
+        initButton();
+    }
 
+    private void initViewModel() {
+        getNewListTrip();
+        observeListTrip();
+    }
 
-        viewBinding.btnAddNewTrip.setOnClickListener(v -> navigate(AddTripFragment.newInstance(), false));
+    private void initRecyclerView() {
+        listTripAdapter = new TripAdapter(requireContext(), tripModels, this);
+        viewBinding.recyclerViewTripList.setAdapter(listTripAdapter);
+    }
+
+    private void initButton() {
+        viewBinding.btnAddNewTrip.setOnClickListener(v -> goToAddNewTripScreen());
         viewBinding.btnSearch.setOnClickListener(v -> {showSearch();});
         viewBinding.btnClearSearch.setOnClickListener(v -> {
             clearSearch();
         });
-        viewBinding.btnReset.setOnClickListener(v -> {
+        viewBinding.btnClearDatabase.setOnClickListener(v -> {
             resetDatabase();
         });
     }
 
     private void showSearch() {
-        viewBinding.lnSearch.setVisibility(View.VISIBLE);
+        viewBinding.linearLayoutSearch.setVisibility(View.VISIBLE);
         viewBinding.edtSearch.setOnEditorActionListener((v1, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 String key = Objects.requireNonNull(viewBinding.edtSearch.getText()).toString();
-                viewModel.searchTrip(key);
+                homePageViewModel.searchTripByName(key);
                 return false;
             }
             return false;
@@ -82,25 +91,36 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
 
     private void clearSearch() {
         viewBinding.edtSearch.getText().clear();
-        viewBinding.lnSearch.setVisibility(View.GONE);
-        viewModel.getTrips();
+        viewBinding.linearLayoutSearch.setVisibility(View.GONE);
+        homePageViewModel.getListTripsFromDatabase();
     }
 
     private void resetDatabase() {
-        viewModel.resetDatabase();
+        homePageViewModel.deleteAllTripFromDatabase();
+    }
+
+    private void goToAddNewTripScreen() {
+        navigate(AddTripFragment.newInstance(), false);
     }
 
 
-    private void initViewModel() {
-        viewModel.getTrips();
-        viewModel.trips.observe(getViewLifecycleOwner(), tripsNew -> {
+    private void getNewListTrip() {
+        homePageViewModel.getListTripsFromDatabase();
+    }
+
+    private void observeListTrip() {
+        homePageViewModel.tripsLiveData.observe(getViewLifecycleOwner(), tripsNew -> {
             if (tripsNew.isEmpty()) {
-                Toast.makeText(requireContext(), "No trip", Toast.LENGTH_SHORT).show();
+                Log.d("TAG", "observeListTrip: No trips");
             }
-            trips.clear();
-            trips.addAll(tripsNew);
-            tripAdapter.notifyDataSetChanged();
+            updateListTripData(tripsNew);
         });
+    }
+
+    private void updateListTripData(List<TripModel> tripsNew) {
+        tripModels.clear();
+        tripModels.addAll(tripsNew);
+        listTripAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -113,7 +133,6 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                //Do nothing
             }
         });
     }

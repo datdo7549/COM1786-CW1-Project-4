@@ -23,7 +23,7 @@
     <string name="trip_detail">This is detail about trip</string>
     <string name="trip_detail_desc">This is detail about this trip</string>
     <string name="delete">Delete trip</string>
-    <string name="add_expense">Add expense</string>
+    <string name="add_expense">Add expenseModel</string>
     <string name="expense_type">Expense type</string>
     <string name="expense_amount">Expense amount</string>
     <string name="expense_time">Expense time</string>
